@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --brand-color: #599D9C;
+  --brand-dark-color: #16796F;
+  --brand-grey-color: #B7BDA9;
+
+  --brand-hover: #16796F;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ededed;
+    --foreground: #0a0a0a;
+  }
+}
+button{
+  font-family: var(--font-quicksand), "Quicksand", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  /* border-radius: 12px; */
+}
+input{
+  font-family: var(--font-quicksand), "Quicksand", sans-serif;
+}
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-quicksand), "Quicksand", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: 70px; /* Account for fixed navbar height */
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
