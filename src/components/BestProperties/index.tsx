@@ -37,9 +37,9 @@ function BestProperties() {
     const fetchProperties = async () => {
       try {
         // Using Unsplash API for property images and creating realistic property data
-        const propertyTypes = ['houses', 'apartments', 'condos', 'studios', 'townhouses']
-        const locations = ['Downtown', 'Suburbs', 'Waterfront', 'Hillside', 'City Center', 'Garden District', 'Historic District', 'Modern Quarter']
-        const statuses = ['For Sale', 'For Rent', 'Featured', 'Sold', 'Active']
+        // const propertyTypes = ['houses', 'apartments', 'condos', 'studios', 'townhouses']
+        // const locations = ['Downtown', 'Suburbs', 'Waterfront', 'Hillside', 'City Center', 'Garden District', 'Historic District', 'Modern Quarter']
+        // const statuses = ['For Sale', 'For Rent', 'Featured', 'Sold', 'Active']
         
         const mockProperties: Property[] = [
           {

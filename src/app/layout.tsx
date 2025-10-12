@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { Quicksand } from "next/font/google";
-import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 const quicksand = Quicksand({
   subsets: ["latin"],

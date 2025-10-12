@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { FiArrowLeft, FiHeart, FiShare2, FiMapPin, FiHome, FiUser, FiPhone, FiMail, FiCalendar, FiDollarSign, FiSquare, FiNavigation } from 'react-icons/fi'
+import { FiArrowLeft, FiHeart, FiShare2, FiMapPin, FiHome, FiPhone, FiMail, FiCalendar, FiDollarSign, FiSquare, FiNavigation } from 'react-icons/fi'
 
 interface Property {
   id: number
@@ -37,7 +37,6 @@ function PropertyPage() {
   const router = useRouter()
   const [property, setProperty] = useState<Property | null>(null)
   const [loading, setLoading] = useState(true)
-  const [selectedImage, setSelectedImage] = useState(0)
   const [isFavorite, setIsFavorite] = useState(false)
 
   // Mock property data - in a real app, this would come from an API
@@ -912,7 +911,7 @@ function PropertyPage() {
                 <div className="text-center">
                   <FiMapPin className="text-4xl text-[#599D9C] mx-auto mb-2" />
                   <p className="text-[#666]">Interactive Map</p>
-                  <p className="text-sm text-[#999]">Click "Open in Maps" to view location</p>
+                  <p className="text-sm text-[#999]">Click Open in Maps to view location</p>
                 </div>
               </div>
             </div>

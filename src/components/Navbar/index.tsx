@@ -19,7 +19,7 @@ function Navbar() {
         setIsMenuOpen(!isMenuOpen);
     };
 
-    const handleSearch = (e: any) => {
+    const handleSearch = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         // Search functionality will be implemented later
         console.log('Searching for:', searchQuery);

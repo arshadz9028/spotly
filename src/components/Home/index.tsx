@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import Link from 'next/link';
-import { FiSearch, FiChevronRight } from 'react-icons/fi';
+import { FiSearch } from 'react-icons/fi';
 import HeroSlideshow from '../Slide';
 import ProductsGrid from '../ProductsGrid';
 import BestProperties from '../BestProperties';
@@ -9,7 +8,7 @@ function Home() {
   const [searchQuery, setSearchQuery] = useState('');
 
 
-  const handleSearch = (e:any) => {
+  const handleSearch = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     console.log('Searching for:', searchQuery);
   };
