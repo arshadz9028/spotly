@@ -10,7 +10,7 @@ function Home() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const fetcher = (url: string) => axios.get(url).then(res => res.data);
-  const { data, error, isLoading } = useSWR('https://fakestoreapi.com/products', fetcher);
+  const { data, isLoading } = useSWR('https://fakestoreapi.com/products', fetcher);
 
 console.log('data', data);
   const handleSearch = (e: { preventDefault: () => void; }) => {
