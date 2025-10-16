@@ -19,15 +19,28 @@ interface Property {
   longitude: number
 }
 
-function ProductsGrid({ data, isLoading, error }: { data: any, isLoading: boolean, error: any }) {
+interface FakestoreProductRating {
+  rate: number
+  count: number
+}
+
+interface FakestoreProduct {
+  id: number
+  title: string
+  price: number | string
+  description?: string
+  category: string
+  image: string
+  rating?: FakestoreProductRating
+}
+
+function ProductsGrid({ data, isLoading }: { data: FakestoreProduct[] | undefined, isLoading: boolean }) {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [displayedCount, setDisplayedCount] = useState(6)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [activeFilter, setActiveFilter] = useState('all')
-  if(error) {
-    return <div>Error: {error.message}</div>
-  }
+  
   console.log('data', data);
   
   const filters = [
@@ -193,7 +206,7 @@ function ProductsGrid({ data, isLoading, error }: { data: any, isLoading: boolea
           { lat: 25.7617, lon: -80.1918, loc: 'Waterfront' }
         ]
 
-        const mapped: Property[] = data.map((item: any, index: number) => {
+        const mapped: Property[] = data.map((item: FakestoreProduct, index: number) => {
           const coord = baseCoords[index % baseCoords.length]
           const rate = item?.rating?.rate ?? 4
           return {

@@ -19,7 +19,22 @@ interface Property {
   longitude: number
 }
 
-function BestProperties({ data, isLoading, error }: { data: any, isLoading: boolean, error: any }) {
+interface FakestoreProductRating {
+  rate: number
+  count: number
+}
+
+interface FakestoreProduct {
+  id: number
+  title: string
+  price: number | string
+  description?: string
+  category: string
+  image: string
+  rating?: FakestoreProductRating
+}
+
+function BestProperties({ data, isLoading }: { data: FakestoreProduct[] | undefined, isLoading: boolean }) {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [activeFilter, setActiveFilter] = useState('all')
@@ -32,9 +47,7 @@ function BestProperties({ data, isLoading, error }: { data: any, isLoading: bool
     { id: 'studios', label: 'Studios', icon: '🏠' },
     { id: 'townhouses', label: 'Townhouses', icon: '🏘️' },
   ]
-  if(error) {
-    return <div>Error: {error.message}</div>
-  }
+  
   // useEffect previously populated mock properties. Keeping as comment per request.
   // setProperties(mockProperties)
   // Now populate from incoming data array
@@ -187,7 +200,7 @@ function BestProperties({ data, isLoading, error }: { data: any, isLoading: bool
           { lat: 25.7617, lon: -80.1918, loc: 'Waterfront' }
         ]
 
-        const mapped: Property[] = data.map((item: any, index: number) => {
+        const mapped: Property[] = data.map((item: FakestoreProduct, index: number) => {
           const coord = baseCoords[index % baseCoords.length]
           const rate = item?.rating?.rate ?? 4
           return {

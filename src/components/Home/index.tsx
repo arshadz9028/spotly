@@ -63,9 +63,9 @@ console.log('data', data);
         </div>
       </section>
 
-      <BestProperties data={data} isLoading={isLoading} error={error}/>
+      <BestProperties data={data} isLoading={isLoading} />
 
-      <ProductsGrid data={data} isLoading={isLoading} error={error}/>
+      <ProductsGrid data={data} isLoading={isLoading} />
     </div>
   );
 }

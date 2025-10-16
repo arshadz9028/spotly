@@ -33,18 +33,33 @@ interface Property {
   }
 }
 
+interface FakestoreProductRating {
+  rate: number
+  count: number
+}
+
+interface FakestoreProduct {
+  id: number
+  title: string
+  price: number | string
+  description?: string
+  category: string
+  image: string
+  rating?: FakestoreProductRating
+}
+
 function PropertyPage() {
   const params = useParams()
   const router = useRouter()
   const [property, setProperty] = useState<Property | null>(null)
   const [loading, setLoading] = useState(true)
   const [isFavorite, setIsFavorite] = useState(false)
-  const fetcher = (url: string) => axios.get(url).then(res => res.data);
-  const { data, error, isLoading } = useSWR(`https://fakestoreapi.com/products/${params.id}`, fetcher);
+  const fetcher = (url: string) => axios.get(url).then(res => res.data as FakestoreProduct);
+  const { data, isLoading } = useSWR<FakestoreProduct>(`https://fakestoreapi.com/products/${params.id}`, fetcher);
   console.log('data', data);
-  if(error) {
-    return <div>Error: {error.message}</div>
-  }
+  // if(error) {
+  //   return <div>Error: {error.message}</div>
+  // }
   // Mock property data commented per request. We'll map from the fetched data instead.
   // const mockProperties: Property[] = [
   //   // Properties from BestProperties (IDs 1-8)
