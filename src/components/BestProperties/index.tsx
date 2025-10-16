@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FiHeart, FiUser, FiMapPin } from 'react-icons/fi'
 
 interface Property {
@@ -32,7 +32,9 @@ function BestProperties({ data, isLoading, error }: { data: any, isLoading: bool
     { id: 'studios', label: 'Studios', icon: '🏠' },
     { id: 'townhouses', label: 'Townhouses', icon: '🏘️' },
   ]
-
+  if(error) {
+    return <div>Error: {error.message}</div>
+  }
   // useEffect previously populated mock properties. Keeping as comment per request.
   // setProperties(mockProperties)
   // Now populate from incoming data array

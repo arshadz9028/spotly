@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FiHeart, FiUser, FiMapPin } from 'react-icons/fi'
 
 interface Property {
@@ -25,7 +25,9 @@ function ProductsGrid({ data, isLoading, error }: { data: any, isLoading: boolea
   const [displayedCount, setDisplayedCount] = useState(6)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [activeFilter, setActiveFilter] = useState('all')
-
+  if(error) {
+    return <div>Error: {error.message}</div>
+  }
   console.log('data', data);
   
   const filters = [
