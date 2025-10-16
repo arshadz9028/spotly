@@ -4,10 +4,15 @@ import HeroSlideshow from '../Slide';
 import ProductsGrid from '../ProductsGrid';
 import BestProperties from '../BestProperties';
 import styles from './index.module.css';
+import axios from 'axios';
+import useSWR from 'swr';
 function Home() {
   const [searchQuery, setSearchQuery] = useState('');
 
+  const fetcher = (url: string) => axios.get(url).then(res => res.data);
+  const { data, error, isLoading } = useSWR('https://fakestoreapi.com/products', fetcher);
 
+console.log('data', data);
   const handleSearch = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     console.log('Searching for:', searchQuery);
@@ -58,9 +63,9 @@ function Home() {
         </div>
       </section>
 
-      <BestProperties />
+      <BestProperties data={data} isLoading={isLoading} error={error}/>
 
-      <ProductsGrid />
+      <ProductsGrid data={data} isLoading={isLoading} error={error}/>
     </div>
   );
 }

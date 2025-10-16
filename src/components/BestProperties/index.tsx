@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { FiHeart, FiUser, FiMapPin } from 'react-icons/fi'
 
 interface Property {
@@ -19,7 +19,7 @@ interface Property {
   longitude: number
 }
 
-function BestProperties() {
+function BestProperties({ data, isLoading, error }: { data: any, isLoading: boolean, error: any }) {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [activeFilter, setActiveFilter] = useState('all')
@@ -33,155 +33,185 @@ function BestProperties() {
     { id: 'townhouses', label: 'Townhouses', icon: '🏘️' },
   ]
 
+  // useEffect previously populated mock properties. Keeping as comment per request.
+  // setProperties(mockProperties)
+  // Now populate from incoming data array
   useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        // Using Unsplash API for property images and creating realistic property data
-        // const propertyTypes = ['houses', 'apartments', 'condos', 'studios', 'townhouses']
-        // const locations = ['Downtown', 'Suburbs', 'Waterfront', 'Hillside', 'City Center', 'Garden District', 'Historic District', 'Modern Quarter']
-        // const statuses = ['For Sale', 'For Rent', 'Featured', 'Sold', 'Active']
-        
-        const mockProperties: Property[] = [
-          {
-            id: 1,
-            title: "Modern Luxury Villa with Panoramic Views",
-            price: 1250000,
-            image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "houses",
-            bedrooms: 4,
-            bathrooms: 3,
-            size: 280,
-            location: "Hillside",
-            rating: 4.8,
-            isFeatured: true,
-            status: "Featured",
-            latitude: 40.7589,
-            longitude: -73.9851
-          },
-          {
-            id: 2,
-            title: "Contemporary Apartment in City Center",
-            price: 450000,
-            image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "apartments",
-            bedrooms: 2,
-            bathrooms: 2,
-            size: 120,
-            location: "City Center",
-            rating: 4.6,
-            isFeatured: false,
-            status: "For Sale",
-            latitude: 40.7614,
-            longitude: -73.9776
-          },
-          {
-            id: 3,
-            title: "Elegant Townhouse with Garden",
-            price: 675000,
-            image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "townhouses",
-            bedrooms: 3,
-            bathrooms: 2,
-            size: 180,
-            location: "Garden District",
-            rating: 4.7,
-            isFeatured: true,
-            status: "For Sale",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 4,
-            title: "Stylish Studio Apartment",
-            price: 280000,
-            image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "studios",
-            bedrooms: 1,
-            bathrooms: 1,
-            size: 45,
-            location: "Downtown",
-            rating: 4.4,
-            isFeatured: false,
-            status: "For Rent",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 5,
-            title: "Luxury Condo with Ocean View",
-            price: 890000,
-            image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "condos",
-            bedrooms: 2,
-            bathrooms: 2,
-            size: 150,
-            location: "Waterfront",
-            rating: 4.9,
-            isFeatured: true,
-            status: "Featured",
-            latitude: 25.7617,
-            longitude: -80.1918
-          },
-          {
-            id: 6,
-            title: "Family Home with Pool",
-            price: 750000,
-            image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "houses",
-            bedrooms: 4,
-            bathrooms: 3,
-            size: 220,
-            location: "Suburbs",
-            rating: 4.5,
-            isFeatured: false,
-            status: "Active",
-            latitude: 40.6782,
-            longitude: -73.9442
-          },
-          {
-            id: 7,
-            title: "Modern Apartment Complex Unit",
-            price: 320000,
-            image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "apartments",
-            bedrooms: 1,
-            bathrooms: 1,
-            size: 75,
-            location: "Modern Quarter",
-            rating: 4.3,
-            isFeatured: false,
-            status: "For Sale",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 8,
-            title: "Historic Townhouse Renovated",
-            price: 550000,
-            image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "townhouses",
-            bedrooms: 3,
-            bathrooms: 2,
-            size: 160,
-            location: "Historic District",
-            rating: 4.6,
-            isFeatured: true,
-            status: "Featured",
-            latitude: 40.7505,
-            longitude: -73.9934
-          }
-        ]
-        
-        setProperties(mockProperties)
-        setLoading(false)
-      } catch (error) {
-        console.error('Error fetching properties:', error)
-        setLoading(false)
-      }
-    }
+    // const mockProperties: Property[] = [
+    //   {
+    //     id: 1,
+    //     title: "Modern Luxury Villa with Panoramic Views",
+    //     price: 1250000,
+    //     image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "houses",
+    //     bedrooms: 4,
+    //     bathrooms: 3,
+    //     size: 280,
+    //     location: "Hillside",
+    //     rating: 4.8,
+    //     isFeatured: true,
+    //     status: "Featured",
+    //     latitude: 40.7589,
+    //     longitude: -73.9851
+    //   },
+    //   {
+    //     id: 2,
+    //     title: "Contemporary Apartment in City Center",
+    //     price: 450000,
+    //     image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "apartments",
+    //     bedrooms: 2,
+    //     bathrooms: 2,
+    //     size: 120,
+    //     location: "City Center",
+    //     rating: 4.6,
+    //     isFeatured: false,
+    //     status: "For Sale",
+    //     latitude: 40.7614,
+    //     longitude: -73.9776
+    //   },
+    //   {
+    //     id: 3,
+    //     title: "Elegant Townhouse with Garden",
+    //     price: 675000,
+    //     image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "townhouses",
+    //     bedrooms: 3,
+    //     bathrooms: 2,
+    //     size: 180,
+    //     location: "Garden District",
+    //     rating: 4.7,
+    //     isFeatured: true,
+    //     status: "For Sale",
+    //     latitude: 40.7505,
+    //     longitude: -73.9934
+    //   },
+    //   {
+    //     id: 4,
+    //     title: "Stylish Studio Apartment",
+    //     price: 280000,
+    //     image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "studios",
+    //     bedrooms: 1,
+    //     bathrooms: 1,
+    //     size: 45,
+    //     location: "Downtown",
+    //     rating: 4.4,
+    //     isFeatured: false,
+    //     status: "For Rent",
+    //     latitude: 40.7505,
+    //     longitude: -73.9934
+    //   },
+    //   {
+    //     id: 5,
+    //     title: "Luxury Condo with Ocean View",
+    //     price: 890000,
+    //     image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "condos",
+    //     bedrooms: 2,
+    //     bathrooms: 2,
+    //     size: 150,
+    //     location: "Waterfront",
+    //     rating: 4.9,
+    //     isFeatured: true,
+    //     status: "Featured",
+    //     latitude: 25.7617,
+    //     longitude: -80.1918
+    //   },
+    //   {
+    //     id: 6,
+    //     title: "Family Home with Pool",
+    //     price: 750000,
+    //     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "houses",
+    //     bedrooms: 4,
+    //     bathrooms: 3,
+    //     size: 220,
+    //     location: "Suburbs",
+    //     rating: 4.5,
+    //     isFeatured: false,
+    //     status: "Active",
+    //     latitude: 40.6782,
+    //     longitude: -73.9442
+    //   },
+    //   {
+    //     id: 7,
+    //     title: "Modern Apartment Complex Unit",
+    //     price: 320000,
+    //     image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "apartments",
+    //     bedrooms: 1,
+    //     bathrooms: 1,
+    //     size: 75,
+    //     location: "Modern Quarter",
+    //     rating: 4.3,
+    //     isFeatured: false,
+    //     status: "For Sale",
+    //     latitude: 40.7505,
+    //     longitude: -73.9934
+    //   },
+    //   {
+    //     id: 8,
+    //     title: "Historic Townhouse Renovated",
+    //     price: 550000,
+    //     image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "townhouses",
+    //     bedrooms: 3,
+    //     bathrooms: 2,
+    //     size: 160,
+    //     location: "Historic District",
+    //     rating: 4.6,
+    //     isFeatured: true,
+    //     status: "Featured",
+    //     latitude: 40.7505,
+    //     longitude: -73.9934
+    //   }
+   
+    try {
+      setLoading(isLoading)
+      if (!isLoading && Array.isArray(data)) {
+        const mapCategoryToType = (category: string): string => {
+          const normalized = (category || '').toLowerCase()
+          if (normalized.includes('men') || normalized.includes('women')) return 'apartments'
+          if (normalized.includes('elect')) return 'condos'
+          if (normalized.includes('jewel')) return 'studios'
+          return 'houses'
+        }
 
-    fetchProperties()
-  }, [])
+        const baseCoords = [
+          { lat: 40.7505, lon: -73.9934, loc: 'Downtown' },
+          { lat: 40.7614, lon: -73.9776, loc: 'City Center' },
+          { lat: 40.6782, lon: -73.9442, loc: 'Suburbs' },
+          { lat: 25.7617, lon: -80.1918, loc: 'Waterfront' }
+        ]
+
+        const mapped: Property[] = data.map((item: any, index: number) => {
+          const coord = baseCoords[index % baseCoords.length]
+          const rate = item?.rating?.rate ?? 4
+          return {
+            id: item.id,
+            title: item.title,
+            price: typeof item.price === 'number' ? item.price : Number(item.price) || 0,
+            image: item.image,
+            propertyType: mapCategoryToType(item.category),
+            bedrooms: (item?.rating?.count ?? 3) % 5 + 1,
+            bathrooms: ((item?.rating?.count ?? 2) % 3) + 1,
+            size: 80 + ((item?.rating?.count ?? 20) % 220),
+            location: coord.loc,
+            rating: rate,
+            isFeatured: rate >= 4.6,
+            status: rate >= 4.6 ? 'Featured' : (index % 3 === 0 ? 'For Rent' : 'For Sale'),
+            latitude: coord.lat,
+            longitude: coord.lon
+          }
+        })
+        setProperties(mapped)
+      }
+    } catch (e) {
+      console.error('Error mapping properties:', e)
+      setLoading(false)
+    }
+  }, [data, isLoading])
 
   const filteredProperties = activeFilter === 'all' 
     ? properties 

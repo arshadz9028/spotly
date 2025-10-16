@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { FiHeart, FiUser, FiMapPin } from 'react-icons/fi'
 
 interface Property {
@@ -19,13 +19,15 @@ interface Property {
   longitude: number
 }
 
-function ProductsGrid() {
+function ProductsGrid({ data, isLoading, error }: { data: any, isLoading: boolean, error: any }) {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [displayedCount, setDisplayedCount] = useState(6)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [activeFilter, setActiveFilter] = useState('all')
 
+  console.log('data', data);
+  
   const filters = [
     { id: 'all', label: 'All Properties', icon: '🏠' },
     { id: 'houses', label: 'Houses', icon: '🏘️' },
@@ -35,278 +37,187 @@ function ProductsGrid() {
     { id: 'townhouses', label: 'Townhouses', icon: '🏘️' },
   ]
 
+  // useEffect previously populated mock properties. Keeping as comment per request.
+  // setProperties(mockProperties)
+  // Now populate from incoming data array
   useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const mockProperties: Property[] = [
-          {
-            id: 9,
-            title: "Luxury Penthouse with City Views",
-            price: 1200000,
-            image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "apartments",
-            bedrooms: 3,
-            bathrooms: 2,
-            size: 200,
-            location: "City Center",
-            rating: 4.9,
-            isFeatured: true,
-            status: "Featured",
-            latitude: 40.7614,
-            longitude: -73.9776
-          },
-          {
-            id: 10,
-            title: "Modern Condo with Balcony",
-            price: 650000,
-            image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "condos",
-            bedrooms: 2,
-            bathrooms: 2,
-            size: 140,
-            location: "Waterfront",
-            rating: 4.7,
-            isFeatured: false,
-            status: "For Sale",
-            latitude: 25.7617,
-            longitude: -80.1918
-          },
-          {
-            id: 11,
-            title: "Cozy Studio in Historic Building",
-            price: 1800,
-            image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "studios",
-            bedrooms: 1,
-            bathrooms: 1,
-            size: 35,
-            location: "Historic District",
-            rating: 4.5,
-            isFeatured: false,
-            status: "For Rent",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 12,
-            title: "Spacious Family House",
-            price: 850000,
-            image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "houses",
-            bedrooms: 4,
-            bathrooms: 3,
-            size: 250,
-            location: "Suburbs",
-            rating: 4.6,
-            isFeatured: true,
-            status: "Featured",
-            latitude: 40.6782,
-            longitude: -73.9442
-          },
-          {
-            id: 13,
-            title: "Contemporary Apartment Complex",
-            price: 380000,
-            image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "apartments",
-            bedrooms: 2,
-            bathrooms: 1,
-            size: 90,
-            location: "Modern Quarter",
-            rating: 4.4,
-            isFeatured: false,
-            status: "For Sale",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 14,
-            title: "Elegant Townhouse Renovation",
-            price: 720000,
-            image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "townhouses",
-            bedrooms: 3,
-            bathrooms: 2,
-            size: 190,
-            location: "Garden District",
-            rating: 4.8,
-            isFeatured: true,
-            status: "Featured",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 15,
-            title: "Modern Loft with Industrial Design",
-            price: 450000,
-            image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "apartments",
-            bedrooms: 2,
-            bathrooms: 2,
-            size: 120,
-            location: "Arts District",
-            rating: 4.6,
-            isFeatured: false,
-            status: "For Sale",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 16,
-            title: "Beachfront Villa with Pool",
-            price: 1500000,
-            image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "houses",
-            bedrooms: 5,
-            bathrooms: 4,
-            size: 350,
-            location: "Beachfront",
-            rating: 4.9,
-            isFeatured: true,
-            status: "Featured",
-            latitude: 25.7617,
-            longitude: -80.1918
-          },
-          {
-            id: 17,
-            title: "Urban Studio with City Views",
-            price: 2200,
-            image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "studios",
-            bedrooms: 1,
-            bathrooms: 1,
-            size: 40,
-            location: "Downtown",
-            rating: 4.3,
-            isFeatured: false,
-            status: "For Rent",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 18,
-            title: "Luxury Condo with Rooftop Access",
-            price: 950000,
-            image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "condos",
-            bedrooms: 3,
-            bathrooms: 2,
-            size: 180,
-            location: "Skyline District",
-            rating: 4.7,
-            isFeatured: true,
-            status: "Featured",
-            latitude: 40.7614,
-            longitude: -73.9776
-          },
-          {
-            id: 19,
-            title: "Charming Victorian House",
-            price: 680000,
-            image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "houses",
-            bedrooms: 3,
-            bathrooms: 2,
-            size: 160,
-            location: "Historic Quarter",
-            rating: 4.5,
-            isFeatured: false,
-            status: "For Sale",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 20,
-            title: "Contemporary Townhouse with Garage",
-            price: 580000,
-            image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "townhouses",
-            bedrooms: 3,
-            bathrooms: 2,
-            size: 170,
-            location: "Residential Park",
-            rating: 4.4,
-            isFeatured: false,
-            status: "For Sale",
-            latitude: 40.6782,
-            longitude: -73.9442
-          },
-          {
-            id: 21,
-            title: "Executive Apartment with Balcony",
-            price: 3200,
-            image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "apartments",
-            bedrooms: 2,
-            bathrooms: 2,
-            size: 110,
-            location: "Business District",
-            rating: 4.6,
-            isFeatured: false,
-            status: "For Rent",
-            latitude: 40.7614,
-            longitude: -73.9776
-          },
-          {
-            id: 22,
-            title: "Mountain View Cabin",
-            price: 420000,
-            image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "houses",
-            bedrooms: 2,
-            bathrooms: 1,
-            size: 95,
-            location: "Mountain Ridge",
-            rating: 4.8,
-            isFeatured: true,
-            status: "Featured",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 23,
-            title: "Minimalist Studio Design",
-            price: 1900,
-            image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "studios",
-            bedrooms: 1,
-            bathrooms: 1,
-            size: 30,
-            location: "Design District",
-            rating: 4.2,
-            isFeatured: false,
-            status: "For Rent",
-            latitude: 40.7505,
-            longitude: -73.9934
-          },
-          {
-            id: 24,
-            title: "Penthouse with Private Terrace",
-            price: 1800000,
-            image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            propertyType: "condos",
-            bedrooms: 4,
-            bathrooms: 3,
-            size: 280,
-            location: "Premium Heights",
-            rating: 4.9,
-            isFeatured: true,
-            status: "Featured",
-            latitude: 40.7614,
-            longitude: -73.9776
-          }
-        ]
-        
-        setProperties(mockProperties)
-        setLoading(false)
-      } catch (error) {
-        console.error('Error fetching properties:', error)
-        setLoading(false)
-      }
-    }
+    // const mockProperties: Property[] = [
+    //   {
+    //     id: 1,
+    //     title: "Modern Luxury Villa with Panoramic Views",
+    //     price: 1250000,
+    //     image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "houses",
+    //     bedrooms: 4,
+    //     bathrooms: 3,
+    //     size: 280,
+    //     location: "Hillside",
+    //     rating: 4.8,
+    //     isFeatured: true,
+    //     status: "Featured",
+    //     latitude: 40.7589,
+    //     longitude: -73.9851
+    //   },
+    //   {
+    //     id: 2,
+    //     title: "Contemporary Apartment in City Center",
+    //     price: 450000,
+    //     image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "apartments",
+    //     bedrooms: 2,
+    //     bathrooms: 2,
+    //     size: 120,
+    //     location: "City Center",
+    //     rating: 4.6,
+    //     isFeatured: false,
+    //     status: "For Sale",
+    //     latitude: 40.7614,
+    //     longitude: -73.9776
+    //   },
+    //   {
+    //     id: 3,
+    //     title: "Elegant Townhouse with Garden",
+    //     price: 675000,
+    //     image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "townhouses",
+    //     bedrooms: 3,
+    //     bathrooms: 2,
+    //     size: 180,
+    //     location: "Garden District",
+    //     rating: 4.7,
+    //     isFeatured: true,
+    //     status: "For Sale",
+    //     latitude: 40.7505,
+    //     longitude: -73.9934
+    //   },
+    //   {
+    //     id: 4,
+    //     title: "Stylish Studio Apartment",
+    //     price: 280000,
+    //     image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "studios",
+    //     bedrooms: 1,
+    //     bathrooms: 1,
+    //     size: 45,
+    //     location: "Downtown",
+    //     rating: 4.4,
+    //     isFeatured: false,
+    //     status: "For Rent",
+    //     latitude: 40.7505,
+    //     longitude: -73.9934
+    //   },
+    //   {
+    //     id: 5,
+    //     title: "Luxury Condo with Ocean View",
+    //     price: 890000,
+    //     image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "condos",
+    //     bedrooms: 2,
+    //     bathrooms: 2,
+    //     size: 150,
+    //     location: "Waterfront",
+    //     rating: 4.9,
+    //     isFeatured: true,
+    //     status: "Featured",
+    //     latitude: 25.7617,
+    //     longitude: -80.1918
+    //   },
+    //   {
+    //     id: 6,
+    //     title: "Family Home with Pool",
+    //     price: 750000,
+    //     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "houses",
+    //     bedrooms: 4,
+    //     bathrooms: 3,
+    //     size: 220,
+    //     location: "Suburbs",
+    //     rating: 4.5,
+    //     isFeatured: false,
+    //     status: "Active",
+    //     latitude: 40.6782,
+    //     longitude: -73.9442
+    //   },
+    //   {
+    //     id: 7,
+    //     title: "Modern Apartment Complex Unit",
+    //     price: 320000,
+    //     image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "apartments",
+    //     bedrooms: 1,
+    //     bathrooms: 1,
+    //     size: 75,
+    //     location: "Modern Quarter",
+    //     rating: 4.3,
+    //     isFeatured: false,
+    //     status: "For Sale",
+    //     latitude: 40.7505,
+    //     longitude: -73.9934
+    //   },
+    //   {
+    //     id: 8,
+    //     title: "Historic Townhouse Renovated",
+    //     price: 550000,
+    //     image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    //     propertyType: "townhouses",
+    //     bedrooms: 3,
+    //     bathrooms: 2,
+    //     size: 160,
+    //     location: "Historic District",
+    //     rating: 4.6,
+    //     isFeatured: true,
+    //     status: "Featured",
+    //     latitude: 40.7505,
+    //     longitude: -73.9934
+    //   }
+   
+   
+   
+    try {
+      setLoading(isLoading)
+      if (!isLoading && Array.isArray(data)) {
+        const mapCategoryToType = (category: string): string => {
+          const normalized = (category || '').toLowerCase()
+          if (normalized.includes('men') || normalized.includes('women')) return 'apartments'
+          if (normalized.includes('elect')) return 'condos'
+          if (normalized.includes('jewel')) return 'studios'
+          return 'houses'
+        }
 
-    fetchProperties()
-  }, [])
+        const baseCoords = [
+          { lat: 40.7505, lon: -73.9934, loc: 'Downtown' },
+          { lat: 40.7614, lon: -73.9776, loc: 'City Center' },
+          { lat: 40.6782, lon: -73.9442, loc: 'Suburbs' },
+          { lat: 25.7617, lon: -80.1918, loc: 'Waterfront' }
+        ]
+
+        const mapped: Property[] = data.map((item: any, index: number) => {
+          const coord = baseCoords[index % baseCoords.length]
+          const rate = item?.rating?.rate ?? 4
+          return {
+            id: item.id,
+            title: item.title,
+            price: typeof item.price === 'number' ? item.price : Number(item.price) || 0,
+            image: item.image,
+            propertyType: mapCategoryToType(item.category),
+            bedrooms: (item?.rating?.count ?? 3) % 5 + 1,
+            bathrooms: ((item?.rating?.count ?? 2) % 3) + 1,
+            size: 80 + ((item?.rating?.count ?? 20) % 220),
+            location: coord.loc,
+            rating: rate,
+            isFeatured: rate >= 4.6,
+            status: rate >= 4.6 ? 'Featured' : (index % 3 === 0 ? 'For Rent' : 'For Sale'),
+            latitude: coord.lat,
+            longitude: coord.lon
+          }
+        })
+        setProperties(mapped)
+      }
+    } catch (e) {
+      console.error('Error mapping properties:', e)
+      setLoading(false)
+    }
+  }, [data, isLoading])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
